@@ -15,12 +15,68 @@ from src.data.basicTypes import ExternalNode, IngredientNode, MachineNode
 if __name__ == '__main__':
     # flow_projects_path = Path('~/Dropbox/OrderedSetCode/game-optimization/minecraft/flow/projects').expanduser()
     # yaml_path = flow_projects_path / 'power/oil/light_fuel_hydrogen_loop.yaml'
-    yaml_path = Path('temporaryFlowProjects/palladium.yaml')
+    yaml_path = Path('temporaryFlowProjects/230_platline.yaml')
 
     G = constructDisjointGraphFromFlow1Yaml(yaml_path)
     G = produceConnectedGraphFromDisjoint(G)
     G = removeIgnorableIngredients(G) # eg water
-    G = addExternalNodes(G)
+
+    excluded_sources = set()
+
+    excluded_sources.add('reprecipitated platinum dust')
+    excluded_sources.add('ammonium chloride')
+    excluded_sources.add('sludge dust residue dust')
+    excluded_sources.add('acidic osmium solution')
+    excluded_sources.add('leach residue dust')
+    excluded_sources.add('platinum concentrate')
+    excluded_sources.add('potassium disulfate dust')
+    excluded_sources.add('PMP')
+    excluded_sources.add('nitrogen dioxide')
+    excluded_sources.add('platinum salt dust')
+    excluded_sources.add('palladium enriched ammonia')
+    excluded_sources.add('platinum dust')
+    excluded_sources.add('sodium ruthenate dust')
+    excluded_sources.add('calcium chloride dust')
+    excluded_sources.add('refined platinum salt dust')
+    excluded_sources.add('diluted sulfuric acid')
+    excluded_sources.add('chlorine')
+    excluded_sources.add('iridium chloride dust')
+    excluded_sources.add('platinum residue dust')
+    excluded_sources.add('rhodium sulfate')
+    excluded_sources.add('molten potassium disulfate')
+    excluded_sources.add('acidic iridium solution')
+    excluded_sources.add('iridium dioxide dust')
+    excluded_sources.add('iridium metal residue dust')
+    excluded_sources.add('rarest metal residue dust')
+
+    excluded_sinks = set()
+    '''
+    excluded_sinks.add('platinum residue dust')
+    excluded_sinks.add('potassium disulfate dust')
+    excluded_sinks.add('salt water')
+    excluded_sinks.add('platinum concentrate')
+    excluded_sinks.add('PMP')
+    excluded_sinks.add('reprecipitated platinum dust')
+    excluded_sinks.add('molten potassium disulfate')
+    excluded_sinks.add('sulfur dust')
+    excluded_sinks.add('potassium dust')
+    excluded_sinks.add('rarest metal residue dust')
+    excluded_sinks.add('ammonia')
+    excluded_sinks.add('leach residue dust')
+    excluded_sinks.add('iridium metal residue dust')
+    excluded_sinks.add('iridium dioxide dust')
+    excluded_sinks.add('refined platinum salt dust')
+    excluded_sinks.add('platinum salt dust')
+    excluded_sinks.add('saltpeter')
+    excluded_sinks.add('hydrochloric acid')
+    excluded_sinks.add('aqua regia')
+    excluded_sinks.add('oxygen')
+    excluded_sinks.add('acidic iridium solution')
+    excluded_sinks.add('ammonium chloride')
+    excluded_sinks.add('calcium dust')
+    '''
+
+    G = addExternalNodes(G, excluded_sources, excluded_sinks)
     for idx, node in G.nodes.items():
         print(idx, node)
     
@@ -43,9 +99,12 @@ if __name__ == '__main__':
 
     G = pruneZeroEdges(G, edge_to_variable)
 
+    def find_coeff(vvar):
+        return system_of_equations.objective[vvar]
+
     if status == 1:
         for variable in edge_to_variable.values():
-            print(variable, variable.value())
+            print(variable, variable.value(), find_coeff(variable))
 
     # Add label for ease of reading
     for idx, node in G.nodes.items():

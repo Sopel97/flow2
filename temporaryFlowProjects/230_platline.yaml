@@ -90,7 +90,7 @@
   I:
     sulfur dust: 2
     potassium dust: 2
-    '[input] oxygen': 7000
+    oxygen: 7000
   O:
     potassium disulfate dust: 11
   eut: 90
